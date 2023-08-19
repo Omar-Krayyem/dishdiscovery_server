@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RecipesController;
 use App\Http\Controllers\LikesController;
+use App\Http\Controllers\CommentsController;
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
@@ -27,6 +28,11 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::get('/count/{id}', [LikesController::class, "countLikes"]);
         Route::post('/store', [LikesController::class, "store"]);
         Route::delete('/destroy/{id}', [LikesController::class, "destroy"]);
+    });
+
+    Route::group(['prefix' => 'comments'], function(){
+        Route::get('/{id}', [CommentsController::class, "getComments"]);
+        Route::post('/store', [CommentsController::class, "store"]);
     });
 
     Route::post('logout', [AuthController::class, 'logout']);
