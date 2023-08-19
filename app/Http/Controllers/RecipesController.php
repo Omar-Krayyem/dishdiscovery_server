@@ -76,6 +76,18 @@ class RecipesController extends Controller
         }
     }
 
+    public function searchRecipes($searchRecipes) {
+        try{
+            $recipes = Recipe::where('name', 'LIKE', "%$searchRecipes%")
+            ->orWhere('cuisine', 'LIKE', "%$searchRecipes%")
+            ->orWhere('ingredients', 'LIKE', "%$searchRecipes%")->get();
+
+            return $this->customResponse($recipes);
+        }catch(Exception $e){
+            return self::customResponse($e->getMessage(),'error',500);
+        } 
+    }
+
     function customResponse($data, $status = 'success', $code = 200){
         $response = ['status' => $status,'data' => $data];
         return response()->json($response,$code);
