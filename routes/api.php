@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RecipesController;
 use App\Http\Controllers\LikesController;
 use App\Http\Controllers\CommentsController;
+use App\Http\Controllers\shoppingListsController;
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
@@ -33,6 +34,12 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::group(['prefix' => 'comments'], function(){
         Route::get('/{id}', [CommentsController::class, "getComments"]);
         Route::post('/store', [CommentsController::class, "store"]);
+    });
+
+    Route::group(['prefix' => 'list'], function(){
+        Route::get('/{id}', [shoppingListsController::class, "getAll"]);
+        Route::post('/store', [shoppingListsController::class, "store"]);
+        Route::delete('/destroy/{id}', [shoppingListsController::class, "destroy"]);
     });
 
     Route::post('logout', [AuthController::class, 'logout']);

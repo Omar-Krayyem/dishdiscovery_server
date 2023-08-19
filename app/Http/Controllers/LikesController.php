@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 use Exception;
 use Illuminate\Http\Request;
-use App\Models\Recipe;
 use App\Models\Like;
 use Illuminate\Support\Facades\Auth;
-use PDO;
 
 class LikesController extends Controller
 {
