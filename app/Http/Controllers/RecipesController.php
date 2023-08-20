@@ -45,14 +45,17 @@ class RecipesController extends Controller
     public function getAll()
     {
         try {
-            $recipes = Recipe::with('user')->get();
+            $recipes = Recipe::with('user')
+                ->orderBy('created_at', 'desc')
+                ->take(24)
+                ->get();
     
             return $this->customResponse($recipes);
         } catch (Exception $e) {
             return self::customResponse($e->getMessage(), 'error', 500);
         }
     }
-    
+
     public function getById(Recipe $recipe){
         try{
             return $this->customResponse($recipe->load('user'));
