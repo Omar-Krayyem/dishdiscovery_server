@@ -26,6 +26,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::get('/{recipe}', [RecipesController::class, "getById"]);
         Route::post('/store', [RecipesController::class, "store"]);
         Route::delete('/destroy/{id}', [RecipesController::class, "destroy"]);
+        Route::get('/thisRecipe/{id}', [RecipesController::class, "hasThisRecipe"]);
     });
 
     Route::group(['prefix' => 'like'], function(){

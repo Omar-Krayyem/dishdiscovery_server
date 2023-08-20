@@ -118,6 +118,21 @@ class RecipesController extends Controller
         } 
     }
 
+    public function hasThisRecipe($id){
+        try{
+            $user = Auth::user();
+            $recipe = Recipe::find($id);
+
+            if ($recipe && $recipe->user_id === $user->id) {
+                return $this->customResponse(true, 'User has this recipe');
+            } else {
+                return $this->customResponse(false, 'User does not have this recipe');
+            }
+        }catch(Exception $e){
+            return self::customResponse($e->getMessage(),'error',500);
+        }
+    }
+
     function customResponse($data, $status = 'success', $code = 200){
         $response = ['status' => $status,'data' => $data];
         return response()->json($response,$code);
