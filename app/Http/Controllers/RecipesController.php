@@ -56,6 +56,18 @@ class RecipesController extends Controller
         }
     }
 
+    public function getMyRecipes()
+    {
+        try {
+            $user = Auth::user();
+            $myRecipes = Recipe::with('user')->where('user_id', $user->id)->get();
+    
+            return $this->customResponse($myRecipes);
+        } catch (Exception $e) {
+            return self::customResponse($e->getMessage(), 'error', 500);
+        }
+    }
+
     public function getById(Recipe $recipe){
         try{
             return $this->customResponse($recipe->load('user'));

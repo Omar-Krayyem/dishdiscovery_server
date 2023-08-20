@@ -18,6 +18,7 @@ Route::controller(AuthController::class)->group(function () {
 Route::group(['middleware' => ['jwt.auth']], function () {
 
     Route::get("/Home", [RecipesController::class, "getAll"]);
+    Route::get("/MyRecipes", [RecipesController::class, "getMyRecipes"]);
     Route::get("/Home/search/{searchItem}", [RecipesController::class, "searchRecipes"]);
     
 
