@@ -33,7 +33,10 @@ class CalendarController extends Controller
     {
         try {
             $user = Auth::user();
-            $recipes = Calendar::where('user_id', $user->id)->get();
+            $recipes = Calendar::with('recipe')
+                ->where('user_id', $user->id)
+                ->orderBy('date', 'asc')
+                ->get();
     
             return $this->customResponse($recipes);
         } catch (Exception $e) {

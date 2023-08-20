@@ -40,7 +40,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     });
 
     Route::group(['prefix' => 'list'], function(){
-        Route::get('/{id}', [shoppingListsController::class, "getAll"]);
+        Route::get('/', [shoppingListsController::class, "getAll"]);
         Route::post('/store', [shoppingListsController::class, "store"]);
         Route::delete('/destroy/{id}', [shoppingListsController::class, "destroy"]);
     });
