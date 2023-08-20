@@ -18,21 +18,20 @@ class RecipesController extends Controller
                 'name' => ['required', 'string'],
                 'cuisine' => ['string'],
                 'ingredients' => ['string'],
-                'image' => ['required', 'string'],
+                'image' => ['required', 'image'],
             ]); 
 
-            $base64Image = $request_info->image;
-            echo $base64Image;
-
-            $decodedImage = base64_decode($base64Image);
-            $filename = 'recipe_' . time() . '.jpg';
-            $path = Storage::disk('public')->put('recipe_images/' . $filename, $decodedImage);
-
+            $fileNameExt = $request_info->file('image')->getClientOriginalName();
+            $fileName = pathinfo($fileNameExt, PATHINFO_FILENAME);
+            $fileExt = $request_info->file('image')->getClientOriginalExtension();
+            $fileNameToStore = $fileName.'_'.time().'.'.$fileExt;
+            $pathToStore = $request_info->file('image')->storeAs('public/recipe_images',$fileNameToStore);
+            
             $recipe = Recipe::create([
                 'name' => $validated_data['name'],
                 'cuisine' => $validated_data['cuisine'],
                 'ingredients' => $validated_data['ingredients'],
-                'image_url' => 'recipe_images/' . $filename,
+                'image_url' => $fileNameToStore,
                 'user_id' => $user->id,
             ]);
 
@@ -49,7 +48,15 @@ class RecipesController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->take(24)
                 ->get();
-    
+
+            // $recipes->image_url = asset('storage/app/public/recipe_images' . $this->image->name);
+
+            foreach ($recipes as $recipe) {
+                // $recipe->image_url = asset('storage/' . $this->recipe_images->name);
+                // $recipe->image = asset('storage/' . $recipe->image_url);
+                $recipe->new_image_url = asset('storage/recipe_images/' . $recipe->image_url);
+            }
+            
             return $this->customResponse($recipes);
         } catch (Exception $e) {
             return self::customResponse($e->getMessage(), 'error', 500);
@@ -61,7 +68,9 @@ class RecipesController extends Controller
         try {
             $user = Auth::user();
             $myRecipes = Recipe::with('user')->where('user_id', $user->id)->get();
-    
+            foreach ($myRecipes as $myRecipe){
+                $myRecipe->new_image_url = asset('storage/recipe_images/' . $myRecipe->image_url);
+            }
             return $this->customResponse($myRecipes);
         } catch (Exception $e) {
             return self::customResponse($e->getMessage(), 'error', 500);
@@ -70,7 +79,9 @@ class RecipesController extends Controller
 
     public function getById(Recipe $recipe){
         try{
-            return $this->customResponse($recipe->load('user'));
+            $recipe->load('user');
+            $recipe->new_image_url = asset('storage/recipe_images/' . $recipe->image_url);
+            return $this->customResponse($recipe);
         }catch(Exception $e){
             return self::customResponse($e->getMessage(),'error',500);
         }
@@ -96,6 +107,10 @@ class RecipesController extends Controller
             $recipes = Recipe::where('name', 'LIKE', "%$searchRecipes%")
             ->orWhere('cuisine', 'LIKE', "%$searchRecipes%")
             ->orWhere('ingredients', 'LIKE', "%$searchRecipes%")->get();
+
+            foreach ($recipes as $recipe) {
+                $recipe->new_image_url = asset('storage/recipe_images/' . $recipe->image_url);
+            }
 
             return $this->customResponse($recipes);
         }catch(Exception $e){
