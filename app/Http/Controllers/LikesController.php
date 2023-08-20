@@ -28,7 +28,8 @@ class LikesController extends Controller
 
     public function destroy($id){
         try{
-            $like = Like::find($id);
+            $user = Auth::user();
+            $like = Like::where('recipe_id', $id)->where('user_id', $user->id);
             $like->delete();
             return $this->customResponse($like, 'Deleted Successfully');
         }catch(Exception $e){
