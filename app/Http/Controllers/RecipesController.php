@@ -95,6 +95,8 @@ class RecipesController extends Controller
                 return $this->customResponse('recipe not found', 'error', 404);
             }
 
+            $recipe->calendar()->delete();
+
             $recipe->delete();
             return $this->customResponse($recipe, 'Deleted Successfully');
         }catch(Exception $e){

@@ -16,18 +16,21 @@ class Recipe extends Model
     }
 
     public function likes(){
-        return $this->hasMany(User::class, 'recipe_id');
+        return $this->hasMany(Like::class, 'recipe_id');
     }
 
     public function comments(){
-        return $this->hasMany(User::class, 'recipe_id');
+        return $this->hasMany(Comment::class, 'recipe_id');
     }
 
-    public function shoppingItems(){
-        return $this->hasMany(User::class, 'recipe_id');
+    public function calendar(){
+        return $this->hasMany(Calendar::class, 'recipe_id');
     }
 
-    public function calender(){
-        return $this->hasMany(User::class, 'recipe_id');
+    public function delete()
+    {
+        $this->calendar()->delete();
+
+        return parent::delete();
     }
 }

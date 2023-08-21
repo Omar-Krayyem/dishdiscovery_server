@@ -42,22 +42,18 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function recipes(){
-        return $this->hasMany(User::class, 'user_id');
+        return $this->hasMany(Recipe::class, 'user_id');
     }
 
     public function likes(){
-        return $this->hasMany(User::class, 'user_id');
+        return $this->hasMany(Like::class, 'user_id');
     }
 
     public function comments(){
-        return $this->hasMany(User::class, 'user_id');
-    }
-
-    public function shoppingItems(){
-        return $this->hasMany(User::class, 'user_id');
+        return $this->hasMany(Comment::class, 'user_id');
     }
 
     public function calender(){
-        return $this->hasOne(User::class, 'user_id');
+        return $this->hasMany(Calendar::class, 'user_id');
     }
 }
