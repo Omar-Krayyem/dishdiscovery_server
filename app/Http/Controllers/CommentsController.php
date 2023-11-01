@@ -30,11 +30,22 @@ class CommentsController extends Controller
     }
 
     public function getComments($id){
-        try{
-            $comments = Comment::with('user')->where('recipe_id', $id)->get();
-            return $this->customResponse($comments, 'All comments');
-        }catch(Exception $e){
-            return self::customResponse($e->getMessage(),'error',500);
+        try {
+            $comments = Comment::with(['user' => function ($query) {
+                $query->select('id', 'first_name', 'last_name');
+            }])->where('recipe_id', $id)->get();
+
+            $result = $comments->map(function ($comment) {
+                return [
+                    'text' => $comment->text,
+                    'first_name' => $comment->user->first_name,
+                    'last_name' => $comment->user->last_name,
+                ];
+            });
+    
+            return $this->customResponse($result, 'All comments');
+        } catch (Exception $e) {
+            return self::customResponse($e->getMessage(), 'error', 500);
         }
     }
 
